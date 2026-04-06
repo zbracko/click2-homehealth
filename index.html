@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
@@ -1703,6 +1703,29 @@
   const twCursor = document.getElementById('twCursor');
   if (twEl && !prefersReduced) {
     const phrases = ['In the Comfort of Home', 'Companionship You Can Trust', 'Care That Feels Like Family', 'Peace of Mind for Your Family', 'Dignity, Respect &amp; Independence'];
+
+    /* Lock title height to tallest phrase so layout never shifts */
+    const titleEl = twEl.closest('.hero__title');
+    if (titleEl) {
+      const origText = twEl.textContent;
+      let maxH = titleEl.offsetHeight;
+      phrases.forEach(p => { twEl.textContent = p; maxH = Math.max(maxH, titleEl.offsetHeight); });
+      twEl.textContent = origText;
+      titleEl.style.minHeight = maxH + 'px';
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          titleEl.style.minHeight = '';
+          const cur = twEl.textContent;
+          let h = titleEl.offsetHeight;
+          phrases.forEach(p => { twEl.textContent = p; h = Math.max(h, titleEl.offsetHeight); });
+          twEl.textContent = cur;
+          titleEl.style.minHeight = h + 'px';
+        }, 200);
+      });
+    }
+
     let phraseIdx = 0;
     let charIdx = phrases[0].length;
     let deleting = false;
