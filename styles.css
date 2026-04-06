@@ -848,16 +848,51 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
 .journey__action-btn--call{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 4px 15px rgba(34,197,94,.3)}
 .journey__action-btn--call:hover{transform:translateY(-2px)!important;box-shadow:0 8px 25px rgba(34,197,94,.4)}
 
-/* Step 5 — Final options */
-.journey__final-options{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
-.journey__final-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:16px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;text-align:left}
-.journey__final-card-header h3{color:#fff;font-size:1.1rem;margin:.5rem 0 .25rem}
-.journey__final-card-header p{color:rgba(255,255,255,.55);font-size:.82rem;line-height:1.4;margin:0}
+/* Step 5 — Contact tabs */
+.journey__contact-tabs{display:flex;gap:.35rem;margin-bottom:0;background:rgba(255,255,255,.04);border-radius:14px 14px 0 0;padding:.35rem;border:1px solid rgba(255,255,255,.08);border-bottom:none}
+.journey__contact-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.7rem .4rem;background:transparent;border:none;border-radius:10px;color:rgba(255,255,255,.4);cursor:pointer;font-size:.78rem;font-weight:600;transition:all .25s;position:relative}
+.journey__contact-tab svg{stroke:rgba(255,255,255,.35);transition:stroke .25s}
+.journey__contact-tab:hover{color:rgba(255,255,255,.6);background:rgba(255,255,255,.04)}
+.journey__contact-tab:hover svg{stroke:rgba(255,255,255,.5)}
+.journey__contact-tab--active{background:rgba(58,175,169,.12);color:var(--teal);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.journey__contact-tab--active svg{stroke:var(--teal)}
+.journey__tab-badge{position:absolute;top:-.2rem;right:-.1rem;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:.55rem;font-weight:700;padding:.1rem .4rem;border-radius:100px;text-transform:uppercase;letter-spacing:.3px;animation:badge-pulse 2s infinite}
+
+/* Tab panels */
+.journey__contact-panels{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:0 0 14px 14px;padding:1.5rem;min-height:220px}
+.journey__contact-panel{display:none;flex-direction:column;gap:1rem;animation:panelFadeIn .3s ease}
+.journey__contact-panel--active{display:flex}
+@keyframes panelFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.journey__panel-header{text-align:center}
+.journey__panel-header h3{color:#fff;font-size:1.1rem;margin:.4rem 0 .2rem}
+.journey__panel-header p{color:rgba(255,255,255,.5);font-size:.82rem;line-height:1.4;margin:0 0 .4rem}
+.journey__form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.journey__panel-form{display:flex;flex-direction:column;gap:.75rem}
+.journey__panel-form .journey__submit-btn{align-self:center;margin-top:.25rem}
+
+/* Panel sections & divider (Talk Now panel) */
+.journey__panel-section{display:flex;flex-direction:column;gap:.75rem;align-items:center}
+.journey__panel-section--compact{gap:.4rem}
+.journey__panel-section .journey__panel-form{width:100%}
+.journey__panel-divider{text-align:center;margin:.6rem 0;position:relative;width:100%}
+.journey__panel-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,.1)}
+.journey__panel-divider span{position:relative;background:rgba(27,42,74,.95);padding:0 .8rem;color:rgba(255,255,255,.35);font-size:.78rem;text-transform:uppercase;letter-spacing:.3px}
+
+/* Call button */
+.journey__call-btn{display:flex;align-items:center;justify-content:center;gap:.75rem;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;font-size:1.2rem;font-weight:700;padding:1rem 2rem;border-radius:12px;text-decoration:none;transition:transform .2s,box-shadow .2s;max-width:300px;width:100%}
+.journey__call-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(58,175,169,.35)}
+.journey__call-btn svg{stroke:#fff}
+
+/* Badges & notes */
 .journey__final-badge{display:inline-block;padding:.2rem .6rem;border-radius:100px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--teal);color:#fff}
-.journey__final-badge--alt{background:var(--warm)}
-.journey__final-badge--alt2{background:var(--blue)}
+.journey__final-badge--hot{background:linear-gradient(135deg,#ef4444,#f97316);animation:badge-pulse 2s infinite}
+@keyframes badge-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
 .journey__final-note{color:rgba(255,255,255,.4);font-size:.78rem;text-align:center}
-.journey__schedule-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+
+/* Hot submit button */
+.journey__submit-btn--hot{background:linear-gradient(135deg,#22c55e,#16a34a)!important;font-size:1.05rem;display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2.5rem;min-width:0;flex:0 0 auto;white-space:nowrap}
+.journey__submit-btn--hot:hover{transform:translateY(-2px)!important;box-shadow:0 8px 25px rgba(34,197,94,.4)!important}
 
 /* Privacy notice */
 .journey__privacy{display:flex;align-items:flex-start;gap:.6rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem 1.25rem;margin-top:1.5rem;font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.5}
@@ -872,22 +907,30 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
 .journey__success-icon{text-align:center;margin-bottom:1rem}
 .journey__success-icon svg{animation:successPop .5s cubic-bezier(.175,.885,.32,1.275)}
 @keyframes successPop{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.journey__phone-ring{animation:phoneRing 1s ease-in-out infinite!important}
+@keyframes phoneRing{0%,100%{transform:rotate(0)}10%{transform:rotate(15deg)}20%{transform:rotate(-15deg)}30%{transform:rotate(10deg)}40%{transform:rotate(-10deg)}50%{transform:rotate(5deg)}60%{transform:rotate(0)}}
 .journey__success-contact{text-align:center;margin-top:1.5rem}
 .journey__success-contact p{color:rgba(255,255,255,.5);font-size:.9rem;margin-bottom:.75rem}
 
 /* Journey responsive */
 @media(max-width:768px){
   .journey__options--grid{grid-template-columns:repeat(2,1fr)}
-  .journey__final-options{grid-template-columns:1fr}
   .journey__title{font-size:1.4rem}
-  .journey__schedule-row{grid-template-columns:1fr}
   .journey__card--wide{padding:1rem}
   .journey__progress{margin-bottom:1.75rem}
   .journey__pip{width:22px;height:22px;font-size:.6rem}
   .journey__privacy{padding:.85rem 1rem;font-size:.75rem}
   .journey__submit-btn{padding:.85rem 1.5rem;font-size:.9rem}
+  .journey__submit-btn--hot{width:100%;justify-content:center;padding:.9rem 1.5rem}
   .journey__action-btn{font-size:1rem;padding:.85rem 1.5rem}
   .journey__input{padding:.75rem .85rem;font-size:.9rem}
+  .journey__form-row{grid-template-columns:1fr}
+  .journey__contact-panels{padding:1.25rem 1rem}
+  .journey__contact-tab{padding:.55rem .25rem;font-size:.72rem;gap:.2rem}
+  .journey__contact-tab svg{width:16px;height:16px}
+  .journey__tab-badge{font-size:.5rem;padding:.08rem .3rem}
+  .journey__call-btn{font-size:1.05rem;padding:.9rem 1.5rem;max-width:100%}
+  .journey__panel-divider span{font-size:.72rem}
 }
 @media(max-width:480px){
   .journey__options--grid{grid-template-columns:1fr 1fr}
@@ -896,8 +939,19 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .journey__card-icon svg{width:26px;height:26px}
   .journey__card-label{font-size:.85rem}
   .journey__card-desc{font-size:.78rem}
-  .journey__final-card-header h3{font-size:.95rem}
-  .journey__final-card-header p{font-size:.78rem}
+  .journey__panel-header h3{font-size:.95rem}
+  .journey__panel-header p{font-size:.78rem}
   .journey__subtitle{font-size:.9rem;margin-bottom:1.5rem}
   .journey__back{font-size:.82rem}
+  .journey__contact-tabs{gap:.15rem;padding:.2rem}
+  .journey__contact-tab{padding:.5rem .15rem;gap:.15rem}
+  .journey__contact-tab svg{width:15px;height:15px}
+  .journey__contact-tab span:not(.journey__tab-badge){font-size:.62rem}
+  .journey__contact-panels{padding:1rem .75rem}
+  .journey__call-btn{font-size:1rem;gap:.5rem}
+}
+@media(max-width:360px){
+  .journey__contact-tab svg{display:none}
+  .journey__contact-tab{padding:.6rem .3rem}
+  .journey__contact-tab span:not(.journey__tab-badge){font-size:.68rem}
 }
