@@ -693,6 +693,8 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .top-bar__logo{gap:.5rem}
   .top-bar__logo-icon{width:26px;height:26px}
   .top-bar__logo-text{font-size:.65rem}
+  .top-bar__logo-img{height:34px}
+  .footer__logo-img{height:50px}
   .trust-logos__row{gap:1.5rem}
   .trust-logos__item{min-width:80px}
   .cta-form__row{grid-template-columns:1fr}
@@ -774,6 +776,7 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .hero__metric-label{font-size:.55rem}
   .top-bar__logo-text{font-size:.6rem}
   .top-bar__logo-icon{width:22px;height:22px}
+  .top-bar__logo-img{height:28px}
   .journey{padding:0 .25rem}
   .journey__title{font-size:1.2rem}
   .journey__subtitle{font-size:.88rem}
