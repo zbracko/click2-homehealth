@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
@@ -1751,15 +1751,28 @@
   /* ── 15. FLOATING MOBILE CTA ── */
   const floatingCTA = document.getElementById('floatingCTA');
   if (floatingCTA) {
+    const isMobile = () => window.innerWidth <= 768;
     const heroSection = document.querySelector('.hero');
     const ctaSection = document.getElementById('contact');
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const heroBottom = heroSection ? heroSection.offsetTop + heroSection.offsetHeight : 600;
-      const ctaTop = ctaSection ? ctaSection.offsetTop - window.innerHeight : Infinity;
-      if (scrollY > heroBottom && scrollY < ctaTop) { floatingCTA.classList.add('floating-cta--show'); }
-      else { floatingCTA.classList.remove('floating-cta--show'); }
-    }, { passive: true });
+
+    function updateFloatingCTA() {
+      if (isMobile()) {
+        /* On mobile: always show the bar */
+        floatingCTA.classList.add('floating-cta--show');
+      } else {
+        /* On desktop: show only between hero and contact section */
+        const scrollY = window.scrollY;
+        const heroBottom = heroSection ? heroSection.offsetTop + heroSection.offsetHeight : 600;
+        const ctaTop = ctaSection ? ctaSection.offsetTop - window.innerHeight : Infinity;
+        if (scrollY > heroBottom && scrollY < ctaTop) { floatingCTA.classList.add('floating-cta--show'); }
+        else { floatingCTA.classList.remove('floating-cta--show'); }
+      }
+    }
+
+    /* Show immediately on mobile after a brief delay for page load */
+    setTimeout(updateFloatingCTA, 800);
+    window.addEventListener('scroll', updateFloatingCTA, { passive: true });
+    window.addEventListener('resize', updateFloatingCTA, { passive: true });
   }
 
   /* ── 16. PROCESS TIMELINE PATH FILL ── */
