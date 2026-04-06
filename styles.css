@@ -511,6 +511,7 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
 .footer__nav a:hover{color:var(--white)}
 .footer__line{width:60px;height:1px;margin:0 auto 1rem;background:rgba(255,255,255,.06)}
 .footer__copy{font-size:var(--fs-xxs);letter-spacing:.5px;text-transform:uppercase}
+.footer__copy-br{display:none}
 
 /* ═══════════════════════════════════════════
    PHOTO STRIP (light)
@@ -703,11 +704,20 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .areas__grid{grid-template-columns:1fr}
   .section-header{margin-bottom:2.5rem}
   .section-desc{font-size:var(--fs-sm)}
-  .footer__links{flex-wrap:wrap;gap:1rem 1.5rem;justify-content:center}
-  .footer__nav{gap:.75rem 1rem}
-  .footer__copy{font-size:.6rem;line-height:1.6}
-  .footer{padding:2.5rem var(--px) 1.5rem;padding-bottom:calc(1.5rem + 70px)}
-  .subscribe{padding:2rem var(--px)}
+  .footer__links{flex-wrap:wrap;gap:.75rem 1.25rem;justify-content:center}
+  .footer__links a{letter-spacing:1px;font-size:.6rem}
+  .footer__nav{flex-wrap:wrap;gap:.6rem .85rem}
+  .footer__nav a{font-size:.6rem}
+  .footer__copy{font-size:.55rem;line-height:1.7;letter-spacing:.3px;text-transform:none;max-width:360px;margin:0 auto}
+  .footer__copy-br{display:block}
+  .footer{padding:2rem var(--px) 1.25rem;padding-bottom:calc(1.25rem + 75px)}
+  .footer__brand{margin-bottom:1rem}
+  .footer__brand-name{font-size:1rem}
+  .footer__logo-icon{width:28px;height:28px}
+  .footer__line{margin:0 auto .75rem}
+  .subscribe{padding:1.75rem var(--px)}
+  .subscribe__text{font-size:.8rem;margin-bottom:.85rem}
+  .subscribe .btn--white{font-size:var(--fs-xs);padding:.75rem 1.5rem}
   .glass-card{padding:2rem 1.5rem}
   .svc-card{padding:2rem 1.25rem}
   .proof__visual{flex:none;width:100%}
@@ -741,6 +751,9 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .cta__title{font-size:clamp(1.4rem,1.2rem + 1vw,2rem)}
   .cta__text{font-size:.9rem}
   .subscribe__title{font-size:1rem}
+  .footer__links{flex-direction:column;gap:.5rem;align-items:center}
+  .footer__nav{flex-direction:column;gap:.5rem;align-items:center}
+  .footer__copy{font-size:.52rem;max-width:300px}
 }
 @media(max-width:400px){
   .hero{padding:3rem var(--px) 2.5rem}
@@ -757,7 +770,8 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .journey__card-icon svg{width:22px;height:22px}
   .journey__card-label{font-size:.82rem}
   .journey__final-card{padding:1rem}
-  .footer__brand-name{font-size:1rem}
+  .footer__brand-name{font-size:.9rem}
+  .footer{padding:1.5rem var(--px) 1rem;padding-bottom:calc(1rem + 75px)}
   .floating-cta__text{font-size:.7rem}
   .floating-cta__text span{font-size:.58rem}
   .floating-cta__btn{padding:.6rem 1rem;font-size:.7rem}
