@@ -436,8 +436,8 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
 .floating-cta{position:fixed;bottom:0;left:0;right:0;z-index:9998;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-top:1px solid var(--g200);padding:.75rem 1rem;padding-bottom:calc(.75rem + env(safe-area-inset-bottom,0px));display:none;transform:translateY(100%);transition:transform .5s cubic-bezier(.4,0,.2,1);box-shadow:0 -4px 20px rgba(0,0,0,.06)}
 .floating-cta--show{transform:translateY(0)}
 .floating-cta__inner{display:flex;align-items:center;justify-content:space-between;max-width:600px;margin:0 auto;gap:.75rem}
-.floating-cta__text{font-size:var(--fs-xs);font-weight:700;color:var(--g900);line-height:1.3;flex:1;min-width:0}
-.floating-cta__text span{display:block;font-weight:400;color:var(--g500);font-size:.65rem;margin-top:.15rem}
+.floating-cta__text{font-size:var(--fs-xs);font-weight:700;color:var(--g900);line-height:1.3;flex:1;min-width:0;overflow:hidden}
+.floating-cta__text span{display:block;font-weight:400;color:var(--g500);font-size:.65rem;margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .floating-cta__btn{flex-shrink:0;padding:.7rem 1.5rem;font-size:var(--fs-xs);white-space:nowrap}
 .floating-cta__call{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex-shrink:0;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 4px 15px rgba(34,197,94,.3);transition:all .25s;text-decoration:none}
 .floating-cta__call:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(34,197,94,.4)}
@@ -754,6 +754,11 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .footer__links{flex-direction:column;gap:.5rem;align-items:center}
   .footer__nav{flex-direction:column;gap:.5rem;align-items:center}
   .footer__copy{font-size:.52rem;max-width:300px}
+  .floating-cta__text{font-size:.7rem}
+  .floating-cta__text span{display:none}
+  .floating-cta__call{width:40px;height:40px}
+  .floating-cta__btn{padding:.6rem 1.1rem;font-size:.7rem}
+  .floating-cta__inner{gap:.6rem}
 }
 @media(max-width:400px){
   .hero{padding:3rem var(--px) 2.5rem}
@@ -772,9 +777,11 @@ canvas#heroCanvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;poi
   .journey__final-card{padding:1rem}
   .footer__brand-name{font-size:.9rem}
   .footer{padding:1.5rem var(--px) 1rem;padding-bottom:calc(1rem + 75px)}
-  .floating-cta__text{font-size:.7rem}
-  .floating-cta__text span{font-size:.58rem}
-  .floating-cta__btn{padding:.6rem 1rem;font-size:.7rem}
+  .floating-cta__text{display:none}
+  .floating-cta__inner{justify-content:center;gap:1rem}
+  .floating-cta__call{width:48px;height:48px}
+  .floating-cta__call svg{width:20px;height:20px}
+  .floating-cta__btn{padding:.75rem 1.5rem;font-size:var(--fs-xs)}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
