@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=18">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="dist/sitemap.xml">
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
@@ -1473,10 +1474,13 @@
     </div>
     <nav class="footer__nav" aria-label="Footer navigation">
       <a href="#services">Services</a>
+      <a href="dist/services/">All Services</a>
       <a href="#areas">Service Areas</a>
+      <a href="dist/areas/">All Areas</a>
       <a href="#testimonials">Testimonials</a>
       <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
+      <a href="dist/sitemap.xml">Sitemap</a>
     </nav>
     <div class="footer__line"></div>
     <p class="footer__copy">&copy; 2026 Senior Trusted Home Care. AHCA Licensed #299996655<br class="footer__copy-br"> Bonded &amp; Insured &middot; 8480 Okeechobee Blvd, West Palm Beach, FL 33411<br class="footer__copy-br"> Serving Palm Beach, Broward &amp; Miami-Dade Counties.</p>
@@ -2095,6 +2099,18 @@
       else { stickyNav.style.padding = ''; stickyNav.style.fontSize = ''; }
     }, { passive: true });
   }
+
+  /* ── Area cards → micro-page links ── */
+  document.querySelectorAll('.area-card').forEach(card => {
+    const nameEl = card.querySelector('.area-card__name');
+    if (!nameEl) return;
+    const slug = nameEl.textContent.trim().toLowerCase()
+      .replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => {
+      window.open('dist/areas/' + slug + '/', '_blank');
+    });
+  });
 
 })();
 </script>
