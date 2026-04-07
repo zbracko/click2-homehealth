@@ -28,27 +28,21 @@
     gtag('config', 'AW-17916604899');
 
     // ─── Conversion helper (called from form handlers & click events) ───
+    // Conversions are imported from GA4 → Google Ads via the linked property.
+    // Firing the GA4 event is sufficient — Google Ads picks it up automatically.
     window.stcTrack = function(eventName, params) {
       params = params || {};
-      // GA4 event (fires to all configured gtag destinations)
-      gtag('event', eventName, params);
-      // Google Ads conversion — only fire for high-value actions
+      // Add conversion value for high-value actions so Google Ads can optimise bids
       if (eventName === 'lead_form_submit') {
-        // TODO: Replace CONVERSION_LABEL with actual label from Google Ads conversion action
-        gtag('event', 'conversion', {
-          send_to: 'AW-17916604899/CONVERSION_LABEL',
-          value: 50.0,
-          currency: 'USD'
-        });
+        params.value = params.value || 50.0;
+        params.currency = params.currency || 'USD';
       }
       if (eventName === 'phone_click') {
-        // TODO: Replace PHONE_LABEL with actual label from Google Ads conversion action
-        gtag('event', 'conversion', {
-          send_to: 'AW-17916604899/PHONE_LABEL',
-          value: 25.0,
-          currency: 'USD'
-        });
+        params.value = params.value || 25.0;
+        params.currency = params.currency || 'USD';
       }
+      // GA4 event → automatically flows to Google Ads as a conversion
+      gtag('event', eventName, params);
     };
   </script>
   <!-- ═══ End Tracking ═══ -->
