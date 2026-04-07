@@ -291,6 +291,50 @@ function buildPage(opts) {
     `window.open('${prefix}dist/areas/' + slug + '/'`
   );
 
+  // ── 14. BreadcrumbList schema (rich breadcrumbs in Google) ──
+  if (opts.breadcrumbs && opts.breadcrumbs.length > 0) {
+    const bcItems = opts.breadcrumbs.map((bc, i) => `      {
+        "@type": "ListItem",
+        "position": ${i + 1},
+        "name": "${escHtml(bc.name)}",
+        "item": "${bc.url}"
+      }`).join(',\n');
+    const bcSchema = `
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+${bcItems}
+    ]
+  }
+  </script>`;
+    html = html.replace('</head>', `${bcSchema}\n</head>`);
+  }
+
+  // ── 15. Internal cross-links section (before footer) ──
+  if (opts.crossLinks && opts.crossLinks.length > 0) {
+    const linkItems = opts.crossLinks.map(cl =>
+      `<a href="${cl.url}" class="cross-link__item">${escHtml(cl.label)}</a>`
+    ).join('\n          ');
+    const crossSection = `
+<!-- ═══ Internal Cross-Links (SEO) ═══ -->
+<section class="cross-links" style="background:var(--slate-50,#f8fafc);padding:3rem 1.5rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <h2 style="font-size:1.25rem;color:var(--teal,#2a6478);margin-bottom:1.5rem;text-align:center;">Explore More Home Care Options</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;">
+          ${linkItems}
+    </div>
+  </div>
+  <style>.cross-link__item{display:inline-block;padding:.5rem 1rem;border-radius:8px;background:white;color:var(--teal,#2a6478);text-decoration:none;font-size:.9rem;border:1px solid #e2e8f0;transition:all .2s}.cross-link__item:hover{background:var(--teal,#2a6478);color:white;border-color:var(--teal,#2a6478)}</style>
+</section>
+`;
+    html = html.replace(
+      /<!-- ═══════════════════════════════════════\s*\n\s*FOOTER/,
+      `${crossSection}\n<!-- ═══════════════════════════════════════\n     FOOTER`
+    );
+  }
+
   return html;
 }
 
@@ -319,10 +363,26 @@ console.log('  Each micro-page = full landing page (same as main index.html)');
 console.log('══════════════════════════════════════════════════════\n');
 const t0 = Date.now();
 
+// Helper: get nearby cities (same county, excluding self, max 5)
+function getNearbyCities(loc, max = 5) {
+  return LOCATIONS.filter(l => l.county === loc.county && l.slug !== loc.slug).slice(0, max);
+}
+
 // ── 1. SERVICE × CITY combo pages (352) ────────────────────
 SERVICES.forEach(svc => {
   LOCATIONS.forEach(loc => {
     const url = `${DOMAIN}/dist/${svc.slug}/${loc.slug}/`;
+    // Cross-links: other services in same city + same service in nearby cities
+    const crossLinks = [];
+    SERVICES.filter(s => s.slug !== svc.slug).slice(0, 4).forEach(s => {
+      crossLinks.push({ label: `${s.shortName} in ${loc.name}`, url: `${DOMAIN}/dist/${s.slug}/${loc.slug}/` });
+    });
+    getNearbyCities(loc, 4).forEach(nearby => {
+      crossLinks.push({ label: `${svc.shortName} in ${nearby.name}`, url: `${DOMAIN}/dist/${svc.slug}/${nearby.slug}/` });
+    });
+    crossLinks.push({ label: `All Services in ${loc.name}`, url: `${DOMAIN}/dist/areas/${loc.slug}/` });
+    crossLinks.push({ label: `All ${svc.shortName} Locations`, url: `${DOMAIN}/dist/services/${svc.slug}/` });
+
     const html = buildPage({
       pageTitle: `${svc.shortName} in ${loc.name}, FL — ${COMPANY}`,
       metaDesc: `${svc.description} ${COMPANY} provides trusted ${svc.shortName.toLowerCase()} services in ${loc.name}, ${loc.county} County, FL. Free consultation: ${PHONE}.`,
@@ -334,6 +394,12 @@ SERVICES.forEach(svc => {
       depth: 3,
       cityName: loc.name,
       countyName: loc.county,
+      breadcrumbs: [
+        { name: 'Home', url: `${DOMAIN}/` },
+        { name: svc.shortName, url: `${DOMAIN}/dist/services/${svc.slug}/` },
+        { name: loc.name, url: url },
+      ],
+      crossLinks,
     });
     writePage(path.join(DIST, svc.slug, loc.slug, 'index.html'), html);
     sitemapUrls.push(url);
@@ -344,6 +410,15 @@ console.log(`  ✓ ${SERVICES.length} services × ${LOCATIONS.length} locations 
 // ── 2. CITY-ONLY pages (44) ────────────────────────────────
 LOCATIONS.forEach(loc => {
   const url = `${DOMAIN}/dist/areas/${loc.slug}/`;
+  // Cross-links: all services in this city + nearby cities
+  const crossLinks = [];
+  SERVICES.forEach(s => {
+    crossLinks.push({ label: `${s.shortName} in ${loc.name}`, url: `${DOMAIN}/dist/${s.slug}/${loc.slug}/` });
+  });
+  getNearbyCities(loc, 6).forEach(nearby => {
+    crossLinks.push({ label: `Home Care in ${nearby.name}`, url: `${DOMAIN}/dist/areas/${nearby.slug}/` });
+  });
+
   const html = buildPage({
     pageTitle: `Home Care Services in ${loc.name}, FL — ${COMPANY}`,
     metaDesc: `${COMPANY} provides compassionate in-home care in ${loc.name}, ${loc.county} County, FL. Companionship, personal care, memory loss support, 24/7 live-in care & more. Free consultation: ${PHONE}.`,
@@ -355,6 +430,12 @@ LOCATIONS.forEach(loc => {
     depth: 3,
     cityName: loc.name,
     countyName: loc.county,
+    breadcrumbs: [
+      { name: 'Home', url: `${DOMAIN}/` },
+      { name: 'Service Areas', url: `${DOMAIN}/dist/areas/` },
+      { name: loc.name, url: url },
+    ],
+    crossLinks,
   });
   writePage(path.join(DIST, 'areas', loc.slug, 'index.html'), html);
   sitemapUrls.push(url);
@@ -364,6 +445,15 @@ console.log(`  ✓ ${LOCATIONS.length} city/area hub pages`);
 // ── 3. SERVICE-ONLY pages (8) ──────────────────────────────
 SERVICES.forEach(svc => {
   const url = `${DOMAIN}/dist/services/${svc.slug}/`;
+  // Cross-links: this service in top cities
+  const crossLinks = [];
+  LOCATIONS.filter(l => MAJOR_CITIES.includes(l.slug)).slice(0, 10).forEach(loc => {
+    crossLinks.push({ label: `${svc.shortName} in ${loc.name}`, url: `${DOMAIN}/dist/${svc.slug}/${loc.slug}/` });
+  });
+  SERVICES.filter(s => s.slug !== svc.slug).forEach(s => {
+    crossLinks.push({ label: s.shortName, url: `${DOMAIN}/dist/services/${s.slug}/` });
+  });
+
   const html = buildPage({
     pageTitle: `${svc.name} — ${COMPANY} | South Florida`,
     metaDesc: `${svc.description} ${COMPANY} offers trusted ${svc.shortName.toLowerCase()} across West Palm Beach, Palm Beach County, and Broward County, FL. Free consultation: ${PHONE}.`,
@@ -373,6 +463,12 @@ SERVICES.forEach(svc => {
     canonicalUrl: url,
     ogTitle: `${svc.name} — ${COMPANY}`,
     depth: 3,
+    breadcrumbs: [
+      { name: 'Home', url: `${DOMAIN}/` },
+      { name: 'Services', url: `${DOMAIN}/dist/services/` },
+      { name: svc.shortName, url: url },
+    ],
+    crossLinks,
   });
   writePage(path.join(DIST, 'services', svc.slug, 'index.html'), html);
   sitemapUrls.push(url);
@@ -384,6 +480,18 @@ const majorLocs = LOCATIONS.filter(l => MAJOR_CITIES.includes(l.slug));
 AUDIENCES.forEach(aud => {
   majorLocs.forEach(loc => {
     const url = `${DOMAIN}/dist/${aud.slug}/${loc.slug}/`;
+    // Cross-links: other audiences in same city + same audience in nearby cities
+    const crossLinks = [];
+    AUDIENCES.filter(a => a.slug !== aud.slug).slice(0, 4).forEach(a => {
+      crossLinks.push({ label: `${a.name} in ${loc.name}`, url: `${DOMAIN}/dist/${a.slug}/${loc.slug}/` });
+    });
+    getNearbyCities(loc, 4).forEach(nearby => {
+      if (MAJOR_CITIES.includes(nearby.slug)) {
+        crossLinks.push({ label: `${aud.name} in ${nearby.name}`, url: `${DOMAIN}/dist/${aud.slug}/${nearby.slug}/` });
+      }
+    });
+    crossLinks.push({ label: `All Services in ${loc.name}`, url: `${DOMAIN}/dist/areas/${loc.slug}/` });
+
     const html = buildPage({
       pageTitle: `${aud.name} in ${loc.name}, FL — ${COMPANY}`,
       metaDesc: `${aud.description} Serving ${loc.name}, ${loc.county} County, FL. Free consultation: ${PHONE}.`,
@@ -395,6 +503,11 @@ AUDIENCES.forEach(aud => {
       depth: 3,
       cityName: loc.name,
       countyName: loc.county,
+      breadcrumbs: [
+        { name: 'Home', url: `${DOMAIN}/` },
+        { name: aud.name, url: url },
+      ],
+      crossLinks,
     });
     writePage(path.join(DIST, aud.slug, loc.slug, 'index.html'), html);
     sitemapUrls.push(url);
