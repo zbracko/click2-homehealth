@@ -13,6 +13,50 @@
   <meta name="geo.region" content="US-FL">
   <meta name="geo.placename" content="El Cid, Florida">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232a6478' rx='16' width='100' height='100'/><text y='70' x='10' font-size='45' font-family='sans-serif' fill='white' font-weight='900'>ST</text></svg>">
+
+  <!-- ═══ Google Analytics 4 + Google Ads Conversion Tracking ═══ -->
+  <!-- REPLACE G-XXXXXXXXXX with your GA4 Measurement ID -->
+  <!-- REPLACE AW-XXXXXXXXXX with your Google Ads Conversion ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    // GA4 — analytics & event tracking
+    gtag('config', 'G-XXXXXXXXXX', {
+      send_page_view: true,
+      cookie_flags: 'SameSite=None;Secure'
+    });
+
+    // Google Ads — conversion tracking
+    gtag('config', 'AW-XXXXXXXXXX');
+
+    // ─── Conversion helper (called from form handlers & click events) ───
+    window.stcTrack = function(eventName, params) {
+      params = params || {};
+      // GA4 event
+      gtag('event', eventName, params);
+      // Google Ads conversion — only fire for high-value actions
+      if (eventName === 'lead_form_submit') {
+        // REPLACE 'AW-XXXXXXXXXX/CONVERSION_LABEL' with your actual conversion action
+        gtag('event', 'conversion', {
+          send_to: 'AW-XXXXXXXXXX/CONVERSION_LABEL',
+          value: 50.0,
+          currency: 'USD'
+        });
+      }
+      if (eventName === 'phone_click') {
+        gtag('event', 'conversion', {
+          send_to: 'AW-XXXXXXXXXX/PHONE_LABEL',
+          value: 25.0,
+          currency: 'USD'
+        });
+      }
+    };
+  </script>
+  <!-- ═══ End Tracking ═══ -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1808,6 +1852,21 @@
     const stepProgress = { '1': 20, '2': 40, '3': 60, 'medicare': 60, '4': 80, '5': 100, 'success': 100 };
 
     function showStep(stepId) {
+      // ── GA4 / Google Ads: Track wizard funnel progression ──
+      if (typeof window.stcTrack === 'function') {
+        var stepNames = {'1':'who','2':'service','3':'payment','medicare':'medicare','4':'urgency','5':'contact','success':'success'};
+        var sn = stepNames[stepId] || stepId;
+        window.stcTrack('wizard_step', { step_id: stepId, step_name: sn, step_number: stepProgress[stepId] || 0 });
+        // Fire micro-conversion when user reaches Step 3+ (engaged)
+        if (stepId === '3' || stepId === 'medicare') {
+          window.stcTrack('wizard_engaged', { step_id: stepId });
+        }
+        // Fire lead conversion when wizard hits success
+        if (stepId === 'success') {
+          window.stcTrack('lead_form_submit', { method: 'wizard', selections: JSON.stringify(selections) });
+        }
+      }
+
       // Hide all steps
       journey.querySelectorAll('.journey__step').forEach(s => s.classList.remove('journey__step--active'));
       // Show target
@@ -1916,6 +1975,11 @@
 
           btn.innerHTML = '<span>✓ Sent!</span>';
           btn.style.background = '#22c55e';
+
+          // ── Track form submission by source ──
+          if (typeof window.stcTrack === 'function') {
+            window.stcTrack('form_submit', { form_id: formId, source: source, method: source });
+          }
 
           // Customize success step based on source
           const firstName = payload.name.split(' ')[0];
@@ -2112,6 +2176,39 @@
       window.open('../../../dist/areas/' + slug + '/', '_blank');
     });
   });
+
+  /* ── 21. PHONE CLICK TRACKING ── */
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a[href^="tel:"]');
+    if (link && typeof window.stcTrack === 'function') {
+      var phone = link.getAttribute('href').replace('tel:', '');
+      window.stcTrack('phone_click', {
+        phone_number: phone,
+        link_location: link.closest('section') ? link.closest('section').id || 'unknown' : 'unknown'
+      });
+    }
+  });
+
+  /* ── 22. CTA BUTTON CLICK TRACKING ── */
+  document.querySelectorAll('a[href="#contact"]').forEach(function(cta) {
+    cta.addEventListener('click', function() {
+      if (typeof window.stcTrack === 'function') {
+        var label = cta.textContent.trim().substring(0, 40);
+        var loc = cta.closest('section') ? cta.closest('section').id || 'hero' : 'hero';
+        window.stcTrack('cta_click', { cta_text: label, cta_location: loc });
+      }
+    });
+  });
+
+  /* ── 23. FLOATING CTA CLICK TRACKING ── */
+  var floatingBtn = document.querySelector('.floating-cta__btn');
+  if (floatingBtn) {
+    floatingBtn.addEventListener('click', function() {
+      if (typeof window.stcTrack === 'function') {
+        window.stcTrack('cta_click', { cta_text: 'Floating CTA', cta_location: 'floating' });
+      }
+    });
+  }
 
 })();
 </script>
