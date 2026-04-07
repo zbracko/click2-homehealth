@@ -223,13 +223,17 @@ function buildPage(opts) {
     `<meta property="og:description" content="${escHtml(opts.metaDesc)}">`
   );
 
-  // ── 5. Canonical URL ──
-  if (!html.includes('rel="canonical"')) {
-    html = html.replace(
-      /<meta property="og:type" content="website">/,
-      `<meta property="og:type" content="website">\n  <link rel="canonical" href="${opts.canonicalUrl}">`
-    );
-  }
+  // ── 5. Canonical URL (replace homepage canonical with this page's canonical) ──
+  html = html.replace(
+    /<link rel="canonical" href="[^"]*">/,
+    `<link rel="canonical" href="${opts.canonicalUrl}">`
+  );
+
+  // ── 5b. OG URL ──
+  html = html.replace(
+    /<meta property="og:url" content="[^"]*">/,
+    `<meta property="og:url" content="${opts.canonicalUrl}">`
+  );
 
   // ── 6. Hero badge text ──
   html = html.replace(
